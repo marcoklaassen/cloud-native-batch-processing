@@ -1,0 +1,17 @@
+---
+apiVersion: console.streamshub.github.com/v1alpha1
+kind: Console
+metadata:
+  name: {{ .Values.kafka.console.name }}
+spec:
+  hostname: {{ .Values.kafka.console.hostname }}
+  kafkaClusters:
+    - name: {{ .Values.kafka.cluster.name }}
+      namespace: {{ .Values.namespace }}
+      listener: plain
+      properties:
+        values: []
+        valuesFrom: []
+      credentials:
+        kafkaUser:
+          name: {{ .Values.kafka.console.username }}

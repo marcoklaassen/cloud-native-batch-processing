@@ -2,7 +2,21 @@ namespace: streaming-demo
 kafka:
   cluster:
     name: messaging
-    version: 3.8.0
+    version: 3.9.0
+  connect:
+    name: debezium-kafka-connect
+    username: debezium
+    topic:
+      creation:
+        enabled: true
+      prefix: debezium
+      history: schema-changes.database
+    connector:
+      name: debezium-kafka-connector-mysql      
+  console:
+    name: kafka-console
+    hostname: kafka-console.apps.ocp4.klaassen.click
+    username: console
 
 knative:
 

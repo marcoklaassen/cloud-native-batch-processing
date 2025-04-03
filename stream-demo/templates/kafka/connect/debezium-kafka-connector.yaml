@@ -1,0 +1,69 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+    labels:
+        strimzi.io/cluster: {{ .Values.kafka.connect.connector.name }}
+    name: {{ .Values.kafka.connect.connector.name }}
+spec:
+    class: io.debezium.connector.mysql.MySqlConnector 
+    tasksMax: 1
+    config:          
+        tasks.max: 1
+
+        # DATABASE configuration
+        database.hostname: mariadb.streaming-demo.svc.cluster.local
+        database.port: 3306
+        database.user: root
+        database.password: ""
+        database.server.id: 223344
+        database.include.list: "test"        
+
+        topic.creation.enable: {{ .Values.kafka.connect.topic.creation.enabled }}
+        topic.creation.default.replication.factor: -1
+        topic.creation.default.partitions: -1
+
+        # -1 means it will use the default replication factor configured in the broker
+        config.storage.replication.factor: -1
+        offset.storage.replication.factor: -1
+        status.storage.replication.factor: -1
+        
+        # PEM general definition
+        security.protocol: SSL
+        
+        ssl.truststore.type: PKCS12
+        ssl.truststore.location: /opt/kafka/connect-certs/{{ .Values.kafka.cluster.name }}-cluster-ca-cert/ca.p12
+        ssl.truststore.password: "kP97gFegj6FF"
+        
+        ssl.keystore.type: PKCS12
+        ssl.keystore.location: /opt/kafka/connect-certs/{{ .Values.kafka.connect.username }}/user.p12
+        ssl.keystore.password: "Rfwtxe7KpIYc8f8WIUd3EyhUxDY1gCNc"
+
+        # debezium 2.0.x and 2.1.x
+        topic.prefix: {{ .Values.kafka.connect.topic.prefix }}
+        schema.history.internal.kafka.bootstrap.servers: {{ .Values.kafka.cluster.name }}-kafka-bootstrap.{{ .Values.namespace }}.svc.cluster.local:9093
+        schema.history.internal.kafka.topic: {{ .Values.kafka.connect.topic.history }}
+        schema.history.internal.skip.unparseable.ddl: "true"
+        
+        # PEM config for producer and consumer
+
+        # producer
+        schema.history.internal.producer.security.protocol: SSL
+        
+        schema.history.internal.producer.ssl.truststore.type: PKCS12
+        schema.history.internal.producer.ssl.truststore.location: /opt/kafka/connect-certs/{{ .Values.kafka.cluster.name }}-cluster-ca-cert/ca.p12
+        schema.history.internal.producer.ssl.truststore.password: "kP97gFegj6FF"
+
+        schema.history.internal.producer.ssl.keystore.type: PKCS12
+        schema.history.internal.producer.ssl.keystore.location: /opt/kafka/connect-certs/{{ .Values.kafka.connect.username }}/user.p12
+        schema.history.internal.producer.ssl.keystore.password: "Rfwtxe7KpIYc8f8WIUd3EyhUxDY1gCNc"
+
+        # consumer
+        schema.history.internal.consumer.security.protocol: SSL
+        
+        schema.history.internal.consumer.ssl.truststore.type: PKCS12
+        schema.history.internal.consumer.ssl.truststore.location: /opt/kafka/connect-certs/{{ .Values.kafka.cluster.name }}-cluster-ca-cert/ca.p12
+        schema.history.internal.consumer.ssl.truststore.password: "kP97gFegj6FF"
+
+        schema.history.internal.consumer.ssl.keystore.type: PKCS12
+        schema.history.internal.consumer.ssl.keystore.location: /opt/kafka/connect-certs/{{ .Values.kafka.connect.username }}/user.p12
+        schema.history.internal.consumer.ssl.keystore.password: "Rfwtxe7KpIYc8f8WIUd3EyhUxDY1gCNc"

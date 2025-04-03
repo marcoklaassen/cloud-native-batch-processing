@@ -1,0 +1,54 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnect
+metadata:
+  name: {{ .Values.kafka.connect.name }}
+  annotations:
+    strimzi.io/use-connector-resources: "true"
+spec:
+  version: {{ .Values.kafka.cluster.version }}
+  config:
+    group.id: {{ .Values.kafka.connect.name }}
+    offset.storage.topic: {{ .Values.kafka.connect.name }}-offset
+    config.storage.topic: {{ .Values.kafka.connect.name }}-config
+    status.storage.topic: {{ .Values.kafka.connect.name }}-status 
+
+    # -1 means it will use the default replication factor configured in the broker
+    config.storage.replication.factor: -1
+    offset.storage.replication.factor: -1
+    status.storage.replication.factor: -1
+    topic.creation.enable: {{ .Values.kafka.connect.topic.creation.enabled }}
+
+  build:
+    output:
+      type: imagestream
+      image: {{ .Values.kafka.connect.name }}:latest
+
+    plugins:
+      - name: debezium-connector-mysql
+        artifacts:
+          - type: zip
+            url: https://maven.repository.redhat.com/ga/io/debezium/debezium-connector-mysql/2.3.4.Final-redhat-00001/debezium-connector-mysql-2.3.4.Final-redhat-00001-plugin.zip
+          - type: zip
+            url: https://maven.repository.redhat.com/ga/io/apicurio/apicurio-registry-distro-connect-converter/2.4.4.Final-redhat-00002/apicurio-registry-distro-connect-converter-2.4.4.Final-redhat-00002.zip
+          - type: zip
+            url: https://maven.repository.redhat.com/ga/io/debezium/debezium-scripting/2.3.4.Final-redhat-00001/debezium-scripting-2.3.4.Final-redhat-00001.zip
+          - type: jar
+            url: https://repo1.maven.org/maven2/org/codehaus/groovy/groovy/3.0.11/groovy-3.0.11.jar
+          - type: jar
+            url: https://repo1.maven.org/maven2/org/codehaus/groovy/groovy-jsr223/3.0.11/groovy-jsr223-3.0.11.jar
+          - type: jar
+            url: https://repo1.maven.org/maven2/org/codehaus/groovy/groovy-json/3.0.11/groovy-json-3.0.11.jar
+
+  bootstrapServers: {{ .Values.kafka.cluster.name }}-kafka-bootstrap.{{ .Values.namespace }}.svc.cluster.local:9093
+
+  tls:
+    trustedCertificates:
+      - secretName: {{ .Values.kafka.cluster.name }}-cluster-ca-cert
+        pattern: "ca.crt"
+
+  authentication:
+    type: tls
+    certificateAndKey:
+      secretName: {{ .Values.kafka.connect.username }}
+      certificate: user.crt
+      key: user.key
