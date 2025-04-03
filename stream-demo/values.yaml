@@ -1,0 +1,24 @@
+namespace: streaming-demo
+kafka:
+  cluster:
+    name: messaging
+    version: 3.8.0
+
+knative:
+
+  service:      
+    name: knative-service-consumer
+    uri: /event
+    image: image-registry.openshift-image-registry.svc:5000/streaming-demo/simple-quarkus-function:latest
+    autoscaleMin: 0
+    autoscaleMax: 5
+    kafka:
+      topic: marco.test.customer
+      username: knative-service-consumer
+  
+  job:
+    name: kanative-job-consumer
+    kafka:
+      topic: marco.test.supplier
+      username: knative-job-consumer
+    

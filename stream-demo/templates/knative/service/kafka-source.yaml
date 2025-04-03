@@ -1,0 +1,38 @@
+apiVersion: sources.knative.dev/v1beta1
+kind: KafkaSource
+metadata:
+  name: {{ .Values.knative.service.name }}-kafka-source
+spec:
+  net:
+    sasl:
+      enable: true
+      user:
+        secretKeyRef:
+          name: {{ .Values.knative.service.kafka.username }}-kafka-config
+          key: kafka.user.name
+      type:
+        secretKeyRef:
+          name: {{ .Values.knative.service.kafka.username }}-kafka-config
+          key: kafka.user.sasl.type
+      password:
+        secretKeyRef:
+          name: {{ .Values.knative.service.kafka.username }}
+          key: password
+    tls:
+      caCert:
+        secretKeyRef:
+          name: {{ .Values.kafka.cluster.name }}-cluster-ca-cert
+          key: ca.crt
+      cert: {}
+      key: {}
+  consumerGroup: {{ .Values.knative.service.kafka.topic }}
+  bootstrapServers:
+    - {{ .Values.kafka.cluster.name }}-kafka-bootstrap.{{ .Values.namespace }}.svc.cluster.local:9092
+  topics:
+    - {{ .Values.knative.service.kafka.topic }}
+  sink:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: {{ .Values.knative.service.name | quote }}
+    uri: {{ .Values.knative.service.uri }}

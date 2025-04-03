@@ -1,0 +1,13 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: {{ .Values.knative.service.name | quote }}
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/min-scale: {{ .Values.knative.service.autoscaleMin | quote }}
+        autoscaling.knative.dev/max-scale: {{ .Values.knative.service.autoscaleMax | quote }}
+    spec:
+      containers:
+        - image: {{ .Values.knative.service.image | quote }}

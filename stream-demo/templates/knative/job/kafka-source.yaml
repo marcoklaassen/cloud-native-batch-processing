@@ -1,0 +1,37 @@
+apiVersion: sources.knative.dev/v1beta1
+kind: KafkaSource
+metadata:
+  name: {{ .Values.knative.job.name }}-kafka-source
+spec:
+  net:
+    sasl:
+      enable: true
+      user:
+        secretKeyRef:
+          name: {{ .Values.knative.job.kafka.username }}-kafka-config
+          key: kafka.user.name
+      type:
+        secretKeyRef:
+          name: {{ .Values.knative.job.kafka.username }}-kafka-config
+          key: kafka.user.sasl.type
+      password:
+        secretKeyRef:
+          name: {{ .Values.knative.job.kafka.username }}
+          key: password
+    tls:
+      caCert:
+        secretKeyRef:
+          name: {{ .Values.kafka.cluster.name }}-cluster-ca-cert
+          key: ca.crt
+      cert: {}
+      key: {}
+  consumerGroup: {{ .Values.knative.job.kafka.topic }}
+  bootstrapServers:
+    - {{ .Values.kafka.cluster.name }}-kafka-bootstrap.{{ .Values.namespace }}.svc.cluster.local:9092
+  topics:
+    - {{ .Values.knative.job.kafka.topic }}
+  sink:
+    ref:
+      apiVersion: sinks.knative.dev/v1alpha1
+      kind: JobSink
+      name: {{ .Values.knative.job.name }}

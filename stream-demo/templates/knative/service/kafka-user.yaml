@@ -1,0 +1,36 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: {{ .Values.knative.service.kafka.username | quote }}
+  labels:
+    strimzi.io/cluster: {{ .Values.kafka.cluster.name | quote }}
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      - resource:
+          type: topic
+          name: {{ .Values.knative.service.kafka.topic | quote }}
+          patternType: literal
+        operation: Read
+        host: '*'
+      - resource:
+          type: topic
+          name: {{ .Values.knative.service.kafka.topic | quote }}
+          patternType: literal
+        operation: Describe
+        host: '*'
+      - resource:
+          type: group
+          name: {{ .Values.knative.service.kafka.topic | quote }}
+          patternType: literal
+        operation: Read
+        host: '*'
+      - resource:
+          type: group
+          name: {{ .Values.knative.service.kafka.topic | quote }}
+          patternType: literal
+        operation: Describe
+        host: '*'    
