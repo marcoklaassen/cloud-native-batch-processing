@@ -4,7 +4,18 @@
 
 ## Kafka
 
+### Cluster
+* Kafka Instance
+
 ### KafkaConnect
+* Image Stream
+* Kafka Connect
+* Kafka Connector
+* Kafka User 
+
+### Console
+* Console Instance
+* Kafka User
 
 ## KNative
 
