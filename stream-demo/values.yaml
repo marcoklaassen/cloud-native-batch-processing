@@ -47,5 +47,5 @@ database:
   rootpassword: rootpass
   database: mariadb
   image: registry.redhat.io/rhel9/mariadb-105
-  port: 3306
-  serverid: 123456
+  port: "3306"
+  serverid: "123456"
