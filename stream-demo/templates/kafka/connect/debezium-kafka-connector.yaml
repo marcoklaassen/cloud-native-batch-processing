@@ -10,13 +10,14 @@ spec:
     config:          
         tasks.max: 1
 
+        # TODO: refactor database configuration: use information from secret
         # DATABASE configuration
-        database.hostname: mariadb.streaming-demo.svc.cluster.local
-        database.port: 3306
-        database.user: root
-        database.password: ""
-        database.server.id: 223344
-        database.include.list: "test"        
+        database.hostname: {{ .Values.database.name }}.{{ .Values.namespace }}.svc.cluster.local
+        database.port: {{ .Values.database.port }}
+        database.user: {{ .Values.database.username }}
+        database.password: {{ .Values.database.userpassword }}
+        database.server.id: {{ .Values.database.serverid }}
+        database.include.list: {{ .Values.database.database }}
 
         topic.creation.enable: {{ .Values.kafka.connect.topic.creation.enabled }}
         topic.creation.default.replication.factor: -1
@@ -27,16 +28,17 @@ spec:
         offset.storage.replication.factor: -1
         status.storage.replication.factor: -1
         
+        # TODO: truststore and keystore password from secret or sth. like that
         # PEM general definition
         security.protocol: SSL
         
         ssl.truststore.type: PKCS12
         ssl.truststore.location: /opt/kafka/connect-certs/{{ .Values.kafka.cluster.name }}-cluster-ca-cert/ca.p12
-        ssl.truststore.password: "kP97gFegj6FF"
+        ssl.truststore.password: {{ .Values.kafka.connect.connector.truststore.password }}
         
         ssl.keystore.type: PKCS12
         ssl.keystore.location: /opt/kafka/connect-certs/{{ .Values.kafka.connect.username }}/user.p12
-        ssl.keystore.password: "Rfwtxe7KpIYc8f8WIUd3EyhUxDY1gCNc"
+        ssl.keystore.password: {{ .Values.kafka.connect.connector.keystore.password }}
 
         # debezium 2.0.x and 2.1.x
         topic.prefix: {{ .Values.kafka.connect.topic.prefix }}
@@ -51,19 +53,19 @@ spec:
         
         schema.history.internal.producer.ssl.truststore.type: PKCS12
         schema.history.internal.producer.ssl.truststore.location: /opt/kafka/connect-certs/{{ .Values.kafka.cluster.name }}-cluster-ca-cert/ca.p12
-        schema.history.internal.producer.ssl.truststore.password: "kP97gFegj6FF"
+        schema.history.internal.producer.ssl.truststore.password: {{ .Values.kafka.connect.connector.truststore.password }}
 
         schema.history.internal.producer.ssl.keystore.type: PKCS12
         schema.history.internal.producer.ssl.keystore.location: /opt/kafka/connect-certs/{{ .Values.kafka.connect.username }}/user.p12
-        schema.history.internal.producer.ssl.keystore.password: "Rfwtxe7KpIYc8f8WIUd3EyhUxDY1gCNc"
+        schema.history.internal.producer.ssl.keystore.password: {{ .Values.kafka.connect.connector.keystore.password }}
 
         # consumer
         schema.history.internal.consumer.security.protocol: SSL
         
         schema.history.internal.consumer.ssl.truststore.type: PKCS12
         schema.history.internal.consumer.ssl.truststore.location: /opt/kafka/connect-certs/{{ .Values.kafka.cluster.name }}-cluster-ca-cert/ca.p12
-        schema.history.internal.consumer.ssl.truststore.password: "kP97gFegj6FF"
+        schema.history.internal.consumer.ssl.truststore.password: {{ .Values.kafka.connect.connector.truststore.password }}
 
         schema.history.internal.consumer.ssl.keystore.type: PKCS12
         schema.history.internal.consumer.ssl.keystore.location: /opt/kafka/connect-certs/{{ .Values.kafka.connect.username }}/user.p12
-        schema.history.internal.consumer.ssl.keystore.password: "Rfwtxe7KpIYc8f8WIUd3EyhUxDY1gCNc"
+        schema.history.internal.consumer.ssl.keystore.password: {{ .Values.kafka.connect.connector.keystore.password }}

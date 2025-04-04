@@ -12,7 +12,11 @@ kafka:
       prefix: debezium
       history: schema-changes.database
     connector:
-      name: debezium-kafka-connector-mysql      
+      name: debezium-kafka-connector-mysql
+      truststore:
+        password: "kP97gFegj6FF"
+      keystore:
+        password: "Rfwtxe7KpIYc8f8WIUd3EyhUxDY1gCNc"
   console:
     name: kafka-console
     hostname: kafka-console.apps.ocp4.klaassen.click
@@ -36,3 +40,12 @@ knative:
       topic: marco.test.supplier
       username: knative-job-consumer
     
+database:
+  name: mariadb
+  username: maria
+  userpassword: maria
+  rootpassword: rootpass
+  database: mariadb
+  image: registry.redhat.io/rhel9/mariadb-105
+  port: 3306
+  serverid: 123456

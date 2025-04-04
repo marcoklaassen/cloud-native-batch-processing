@@ -1,3 +1,52 @@
+# Prerequisites
+
+## Operators
+* Red Hat OpenShift Serverless
+* Streams for Apache Kafka
+* Streams for Apache Kafka Console
+
+### Serverless configuration
+
+```
+apiVersion: operator.knative.dev/v1beta1
+kind: KnativeServing
+metadata:
+  name: knative-serving
+  namespace: knative-serving
+spec: {}
+```
+
+```
+kind: KnativeEventing
+apiVersion: operator.knative.dev/v1beta1
+metadata:
+  name: knative-eventing
+  namespace: knative-eventing
+spec: {}
+```
+
+```
+kind: KnativeKafka
+apiVersion: operator.serverless.openshift.io/v1alpha1
+metadata:
+  name: knative-kafka
+  namespace: knative-eventing
+spec:
+  broker:
+    enabled: false
+    defaultConfig:
+      numPartitions: 10
+      replicationFactor: 3
+      bootstrapServers: REPLACE_WITH_COMMA_SEPARATED_KAFKA_BOOTSTRAP_SERVERS
+  source:
+    enabled: true
+  sink:
+    enabled: true
+  channel:
+    enabled: false
+    bootstrapServers: REPLACE_WITH_COMMA_SEPARATED_KAFKA_BOOTSTRAP_SERVERS
+```
+
 # Helm Chart Description
 
 ## Database

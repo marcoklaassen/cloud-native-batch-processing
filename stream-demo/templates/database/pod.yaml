@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ .Values.database.name }}
+  labels:
+    app: {{ .Values.database.name }}
+spec:
+  containers:
+    - name: {{ .Values.database.name }}
+      image: {{ .Values.database.image }}
+      ports:
+        - containerPort: {{ .Values.database.port }}
+          protocol: TCP
+      env:
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              key: user
+              name: {{ .Values.database.name }}
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: userPassword
+              name: {{ .Values.database.name }}
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              key: database
+              name: {{ .Values.database.name }}
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: rootPassword
+              name: {{ .Values.database.name }}
+
