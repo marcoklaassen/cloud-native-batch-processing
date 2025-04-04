@@ -2,7 +2,7 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaConnector
 metadata:
     labels:
-        strimzi.io/cluster: {{ .Values.kafka.connect.connector.name }}
+        strimzi.io/cluster: {{ .Values.kafka.connect.name }}
     name: {{ .Values.kafka.connect.connector.name }}
 spec:
     class: io.debezium.connector.mysql.MySqlConnector 
