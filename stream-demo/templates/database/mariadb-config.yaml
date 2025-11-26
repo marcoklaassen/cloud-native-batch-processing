@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.database.name }}
+data:
+  my.cnf: >-
+    [mysqld]    
+    
+    # Debezium configs
+
+    server-id                   = 1 
+    
+    log_bin                     = mysql-bin
+    
+    binlog_format               = ROW
+    
+    binlog_row_image            = FULL
+    
+    binlog_expire_logs_seconds  = 864000
+
+binaryData: {}
+immutable: false

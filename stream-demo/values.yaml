@@ -14,9 +14,9 @@ kafka:
     connector:
       name: debezium-kafka-connector-mysql
       truststore:
-        password: "kP97gFegj6FF"
+        password: a38zl56rMGLS # secret: messaging-cluster-ca-cert key: ca.password
       keystore:
-        password: "Rfwtxe7KpIYc8f8WIUd3EyhUxDY1gCNc"
+        password: vYrv7vWTC522witx34rMQnr4nqOLMwWf # secret: debezium key: user.password
   console:
     name: kafka-console
     hostname: kafka-console.apps.ocp4.klaassen.click
@@ -46,6 +46,6 @@ database:
   userpassword: maria
   rootpassword: rootpass
   database: mariadb
-  image: registry.redhat.io/rhel9/mariadb-105
-  port: "3306"
-  serverid: "123456"
+  image: registry.redhat.io/rhel9/mariadb-1011
+  port: 3306
+  serverid: 1

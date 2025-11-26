@@ -14,44 +14,12 @@ spec:
     # Kafka Connects internal topics used to store configuration, offsets or status
     - resource:
         type: group
-        name: connect-cluster
+        name: '*'
       operations:
         - Read
     - resource:
         type: topic
-        name: {{ .Values.kafka.connect.name }}-config
-      operations:
-        - Create
-        - Describe
-        - Read
-        - Write
-    - resource:
-        type: topic
-        name: {{ .Values.kafka.connect.name }}-status
-      operations:
-        - Create
-        - Describe
-        - Read
-        - Write
-    - resource:
-        type: topic
-        name: {{ .Values.kafka.connect.name }}-offset
-      operations:
-        - Create
-        - Describe
-        - Read
-        - Write
-
-    # Additional topics and groups used by connectors
-    # Change to match the topics used by your connectors
-    - resource:
-        type: group
-        name: {{ .Values.kafka.connect.name }}
-      operations:
-       - Read
-    - resource:
-        type: topic
-        name: {{ .Values.kafka.connect.topic.history }}
+        name: '*'
       operations:
         - Create
         - Describe
