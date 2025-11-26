@@ -31,13 +31,13 @@ knative:
     autoscaleMin: 0
     autoscaleMax: 5
     kafka:
-      topic: marco.test.customer
+      topic: debezium.mariadb.customer
       username: knative-service-consumer
   
   job:
     name: kanative-job-consumer
     kafka:
-      topic: marco.test.supplier
+      topic: debezium.mariadb.supplier
       username: knative-job-consumer
     
 database:
