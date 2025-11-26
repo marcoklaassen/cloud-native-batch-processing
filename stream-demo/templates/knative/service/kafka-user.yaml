@@ -14,23 +14,30 @@ spec:
           type: topic
           name: {{ .Values.knative.service.kafka.topic | quote }}
           patternType: literal
-        operation: Read
-        host: '*'
+        operations: 
+        - Read
+        - Describe
       - resource:
           type: topic
           name: {{ .Values.knative.service.kafka.topic | quote }}
           patternType: literal
-        operation: Describe
+        operations: 
+        - Read
+        - Describe
         host: '*'
       - resource:
           type: group
           name: {{ .Values.knative.service.kafka.topic | quote }}
           patternType: literal
-        operation: Read
+        operations: 
+        - Read
+        - Describe
         host: '*'
       - resource:
           type: group
           name: {{ .Values.knative.service.kafka.topic | quote }}
           patternType: literal
-        operation: Describe
+        operations: 
+        - Read
+        - Describe
         host: '*'    

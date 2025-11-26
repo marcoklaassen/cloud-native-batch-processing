@@ -4,6 +4,7 @@
 * Red Hat OpenShift Serverless
 * Streams for Apache Kafka
 * Streams for Apache Kafka Console
+* Deploy and run the pipeline from [this simple quarkus app](https://github.com/marcoklaassen/simple-quarkus-function) (you'll need this container image available in your namespace as configured in `knative.service.image: image-registry.openshift-image-registry.svc:5000/streaming-demo/simple-quarkus-function:latest` in `stream-demo/values.yaml`)
 
 ### Serverless configuration
 
@@ -68,7 +69,6 @@ spec:
 
 ## KNative
 
-
 ### KNative Service
 
 * Kafka Source
@@ -80,6 +80,14 @@ spec:
 * Kafka Source
 * Config Secret
 * Kafka User
+
+# Installation
+
+Deploy this demo
+
+```
+helm upgrade --install stream-demo stream-demo 
+```
 
 # Links
 

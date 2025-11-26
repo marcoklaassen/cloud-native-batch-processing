@@ -2,7 +2,7 @@ namespace: streaming-demo
 kafka:
   cluster:
     name: messaging
-    version: 3.9.0
+    version: 4.0.0
   connect:
     name: debezium-kafka-connect
     username: debezium
@@ -13,10 +13,10 @@ kafka:
       history: schema-changes.database
     connector:
       name: debezium-kafka-connector-mysql
-      truststore:
-        password: a38zl56rMGLS # secret: messaging-cluster-ca-cert key: ca.password
-      keystore:
-        password: vYrv7vWTC522witx34rMQnr4nqOLMwWf # secret: debezium key: user.password
+      # Passwords are read from Kubernetes secrets at template render time:
+      # truststore.password: secret "messaging-cluster-ca-cert" key "ca.password"
+      # keystore.password: secret "debezium" key "user.password"
+      # These secrets must exist in the target namespace before deploying
   console:
     name: kafka-console
     hostname: kafka-console.apps.ocp4.klaassen.click

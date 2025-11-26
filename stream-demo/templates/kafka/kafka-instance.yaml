@@ -2,12 +2,16 @@ kind: Kafka
 apiVersion: kafka.strimzi.io/v1beta2
 metadata:
   name: {{ .Values.kafka.cluster.name }}
+  annotations:
+    strimzi.io/node-pools: enabled
+    strimzi.io/kraft: enabled
+  namespace: streaming-demo
 spec:
   kafka:
     version: {{ .Values.kafka.cluster.version }}
+    metadataVersion: 4.0-IV3
     authorization:
       type: simple      
-    replicas: 3
     listeners:
       - name: plain
         port: 9092
@@ -27,27 +31,32 @@ spec:
       transaction.state.log.min.isr: 2
       default.replication.factor: 3
       min.insync.replicas: 2
-      inter.broker.protocol.version: '3.9'
-    storage:
-      type: ephemeral
-  zookeeper:
-    storage:
-      type: ephemeral
-    replicas: 3
-    resources:
-      requests:
-        memory: 1Gi
-        cpu: 10m
   entityOperator:
-    topicOperator:
-      watchedNamespace: "{{ .Values.namespace }}"
-      resources:
-        requests:
-          memory: 1Gi
-          cpu: 10m
-    userOperator:
-      watchedNamespace: "{{ .Values.namespace }}"
-      resources:
-        requests:
-          memory: 1Gi
-          cpu: 10m
+    topicOperator: {}
+    userOperator: {}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: {{ .Values.kafka.cluster.name }}-controllers
+  labels:
+    strimzi.io/cluster: {{ .Values.kafka.cluster.name }}
+spec:
+  replicas: 3
+  roles:
+    - controller
+  storage:
+    type: ephemeral
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: {{ .Values.kafka.cluster.name }}-brokers
+  labels:
+    strimzi.io/cluster: {{ .Values.kafka.cluster.name }}
+spec:
+  replicas: 3
+  roles:
+    - broker
+  storage:
+    type: ephemeral

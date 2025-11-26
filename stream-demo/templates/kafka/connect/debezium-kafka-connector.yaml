@@ -28,17 +28,19 @@ spec:
         offset.storage.replication.factor: -1
         status.storage.replication.factor: -1
         
-        # TODO: truststore and keystore password from secret or sth. like that
+        # Passwords are read from Kubernetes secrets at template render time
+        # truststore.password: secret "{{ .Values.kafka.cluster.name }}-cluster-ca-cert" key "ca.password"
+        # keystore.password: secret "{{ .Values.kafka.connect.username }}" key "user.password"
         # PEM general definition
         security.protocol: SSL
         
         ssl.truststore.type: PKCS12
         ssl.truststore.location: /opt/kafka/connect-certs/{{ .Values.kafka.cluster.name }}-cluster-ca-cert/ca.p12
-        ssl.truststore.password: {{ .Values.kafka.connect.connector.truststore.password }}
+        ssl.truststore.password: {{ $truststoreSecret := lookup "v1" "Secret" .Values.namespace (printf "%s-cluster-ca-cert" .Values.kafka.cluster.name) }}{{ if $truststoreSecret }}{{ index $truststoreSecret.data "ca.password" | b64dec | quote }}{{ else }}{{ fail "Secret messaging-cluster-ca-cert not found. Please ensure the Kafka cluster CA certificate secret exists." }}{{ end }}
         
         ssl.keystore.type: PKCS12
         ssl.keystore.location: /opt/kafka/connect-certs/{{ .Values.kafka.connect.username }}/user.p12
-        ssl.keystore.password: {{ .Values.kafka.connect.connector.keystore.password }}
+        ssl.keystore.password: {{ $keystoreSecret := lookup "v1" "Secret" .Values.namespace .Values.kafka.connect.username }}{{ if $keystoreSecret }}{{ index $keystoreSecret.data "user.password" | b64dec | quote }}{{ else }}{{ fail (printf "Secret %s not found. Please ensure the Kafka user secret exists." .Values.kafka.connect.username) }}{{ end }}
 
         # debezium 2.0.x and 2.1.x
         topic.prefix: {{ .Values.kafka.connect.topic.prefix }}
@@ -53,19 +55,19 @@ spec:
         
         schema.history.internal.producer.ssl.truststore.type: PKCS12
         schema.history.internal.producer.ssl.truststore.location: /opt/kafka/connect-certs/{{ .Values.kafka.cluster.name }}-cluster-ca-cert/ca.p12
-        schema.history.internal.producer.ssl.truststore.password: {{ .Values.kafka.connect.connector.truststore.password }}
+        schema.history.internal.producer.ssl.truststore.password: {{ $truststoreSecret := lookup "v1" "Secret" .Values.namespace (printf "%s-cluster-ca-cert" .Values.kafka.cluster.name) }}{{ if $truststoreSecret }}{{ index $truststoreSecret.data "ca.password" | b64dec | quote }}{{ else }}{{ fail "Secret messaging-cluster-ca-cert not found. Please ensure the Kafka cluster CA certificate secret exists." }}{{ end }}
 
         schema.history.internal.producer.ssl.keystore.type: PKCS12
         schema.history.internal.producer.ssl.keystore.location: /opt/kafka/connect-certs/{{ .Values.kafka.connect.username }}/user.p12
-        schema.history.internal.producer.ssl.keystore.password: {{ .Values.kafka.connect.connector.keystore.password }}
+        schema.history.internal.producer.ssl.keystore.password: {{ $keystoreSecret := lookup "v1" "Secret" .Values.namespace .Values.kafka.connect.username }}{{ if $keystoreSecret }}{{ index $keystoreSecret.data "user.password" | b64dec | quote }}{{ else }}{{ fail (printf "Secret %s not found. Please ensure the Kafka user secret exists." .Values.kafka.connect.username) }}{{ end }}
 
         # consumer
         schema.history.internal.consumer.security.protocol: SSL
         
         schema.history.internal.consumer.ssl.truststore.type: PKCS12
         schema.history.internal.consumer.ssl.truststore.location: /opt/kafka/connect-certs/{{ .Values.kafka.cluster.name }}-cluster-ca-cert/ca.p12
-        schema.history.internal.consumer.ssl.truststore.password: {{ .Values.kafka.connect.connector.truststore.password }}
+        schema.history.internal.consumer.ssl.truststore.password: {{ $truststoreSecret := lookup "v1" "Secret" .Values.namespace (printf "%s-cluster-ca-cert" .Values.kafka.cluster.name) }}{{ if $truststoreSecret }}{{ index $truststoreSecret.data "ca.password" | b64dec | quote }}{{ else }}{{ fail "Secret messaging-cluster-ca-cert not found. Please ensure the Kafka cluster CA certificate secret exists." }}{{ end }}
 
         schema.history.internal.consumer.ssl.keystore.type: PKCS12
         schema.history.internal.consumer.ssl.keystore.location: /opt/kafka/connect-certs/{{ .Values.kafka.connect.username }}/user.p12
-        schema.history.internal.consumer.ssl.keystore.password: {{ .Values.kafka.connect.connector.keystore.password }}
+        schema.history.internal.consumer.ssl.keystore.password: {{ $keystoreSecret := lookup "v1" "Secret" .Values.namespace .Values.kafka.connect.username }}{{ if $keystoreSecret }}{{ index $keystoreSecret.data "user.password" | b64dec | quote }}{{ else }}{{ fail (printf "Secret %s not found. Please ensure the Kafka user secret exists." .Values.kafka.connect.username) }}{{ end }}
